@@ -73,10 +73,44 @@ let saveInfoDoctorService = (data)=>{
         }
     })
 }
-
+let getDetailInfoOfDoctor=(id)=>{
+    return new Promise(async(resolve, reject) => {
+        try {
+            if(!id){
+                resolve({
+                    errCode: 1,
+                    errMessage:'Missing required parameter'
+                })
+            }else{
+                let data = await db.User.findOne({
+                    where: { id: id},
+                    attributes: {exclude:['password']},
+                    include: [
+                        {model: db.Markdown, attributes: ['contentHTML', 'contentMD', 'description']},
+                        {model: db.AllCode, as:'positionData',attributes:['valueEn','valueVi']},
+                    ],
+                    raw: false,
+                    nest: true
+                })
+                if(data && data.image){
+                    data.image = new Buffer(data.image, 'base64').toString('binary');
+                }
+                if(!data) data ={}
+                resolve({
+                    errCode: 0,
+                    data
+                })
+            }
+        } catch (error) {
+            reject(error)
+        }
+    })
+}
 
 module.exports = {
     getTopDoctorHome: getTopDoctorHome,
     getAllDoctorsService: getAllDoctorsService,
-    saveInfoDoctorService: saveInfoDoctorService
+    saveInfoDoctorService: saveInfoDoctorService,
+    getDetailInfoOfDoctor: getDetailInfoOfDoctor,
+
 }
