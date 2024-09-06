@@ -10,7 +10,7 @@ let handleUserLogin = (email, password)=>{
             let isExist = await checKEmail(email);
             if(isExist){
                 let user = await db.User.findOne({
-                    attributes:['email', 'firstName', 'password', 'lastName'],
+                    attributes:['email', 'firstName', 'password', 'lastName','roleId'],
                     where: {email: email},
                     raw: true
                 })
@@ -151,7 +151,7 @@ let deleteUser=(id)=>{
     })
 }
 let updateUserDataAPI=(data)=>{
-    console.log('data: ', data)
+    // console.log('data: ', data)
     return new Promise(async(resolve, reject)=>{
         try {
             if(!data.id || !data.roleId || !data.positionId || !data.gender){

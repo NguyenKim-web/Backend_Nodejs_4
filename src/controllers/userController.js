@@ -12,7 +12,7 @@ let handleLogin = async(req, res)=>{
         })
     }else{
         let userData = await USERservice.handleUserLogin(email, password);
-        console.log('userData la: ', userData)
+        // console.log('userData la: ', userData)
         return res.status(200).json({
             errCode: userData.errCode,
             message: userData.errMessage,
@@ -40,7 +40,7 @@ let handleGetAllUsers = async (req, res)=>{
 
 let handleCreateNewUser = async(req, res)=>{
     let message = await USERservice.createNewUser(req.body);
-    console.log('req.body (userController): ', req.body)
+    // console.log('req.body (userController): ', req.body)
     return res.status(200).json(message);
 }
 let handleEditUser=async(req, res)=>{
