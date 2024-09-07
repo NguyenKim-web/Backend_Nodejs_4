@@ -52,12 +52,16 @@ let saveInfoDoctorService = (data)=>{
     // console.log('data la: ', data)
     return new Promise(async(resolve, reject)=>{
         try {
-            if(!data.doctorId || !data.contentHTML|| !data.contentMD || !data.action){ //
+            if(!data.doctorId || !data.contentHTML|| !data.contentMD || !data.action ||
+                !data.selectedPrice || !data.selectedPayMethod|| !data.selectedProvince ||
+                !data.clinicName || !data.clinicAddress || !data.note 
+            ){ //
                 resolve({
                     errCode: 1,
                     errMessage: 'Missing parameter(from DOCTORservice)'
                 })
             }else{
+                //upsert markdown table
                 if(data.action ==='CREATE'){
                     await db.Markdown.create({
                         contentHTML: data.contentHTML,
@@ -74,10 +78,40 @@ let saveInfoDoctorService = (data)=>{
                         doctorMarkdown.contentHTML= data.contentHTML,
                         doctorMarkdown.contentMD= data.contentMD,
                         doctorMarkdown.description= data.description,
-                        // doctorMarkdown.updatedAt= new Date(),
+                        doctorMarkdown.updatedAt= new Date(),
                         await doctorMarkdown.save()
                     }
     
+                }
+                //upsert doctor info
+                let doctorInfo = await db.DoctorInfo.findOne({
+                    where: {
+                        doctorId: data.doctorId
+                    },
+                    raw:false
+                })
+                if(doctorInfo){
+                    //update
+                    doctorInfo.doctorId= data.doctorId;
+                    doctorInfo.priceId= data.selectedPrice;
+                    doctorInfo.provinceId= data.selectedProvince;
+                    doctorInfo.paymentId= data.selectedPayMethod;
+                    doctorInfo.clinicName= data.clinicName;
+                    doctorInfo.clinicAddress= data.clinicAddress;
+                    doctorInfo.note= data.note;
+                    
+                        await doctorMarkdown.save()
+                }else{
+                    await db.DoctorInfo.create({
+                        doctorId: data.doctorId,
+                        priceId: data.selectedPrice,
+                        provinceId: data.selectedProvince,
+                        paymentId: data.selectedPayMethod,
+                        clinicName: data.clinicName,
+                        clinicAddress: data.clinicAddress,
+                        note: data.note,
+                    })
+                    //create
                 }
                 resolve({
                     errCode: 0,
