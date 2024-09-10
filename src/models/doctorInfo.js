@@ -12,16 +12,11 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      // DoctorInfo.belongsTo(models.AllCode)
-      // DoctorInfo.belongsTo(models.AllCode)
-
-      // DoctorInfo.belongsTo(models.AllCode, {sourceKey: 'positionId', targetKey:'keyMap', as:'positionData' })
-      // DoctorInfo.belongsTo(models.AllCode, {sourceKey: 'gender', targetKey:'keyMap', as:'genderData' })
-
-    //   DoctorInfo.belongsTo(models.AllCode, {foreignKey: 'positionId', targetKey:'keyMap',as: 'positionData' , })
-    //   DoctorInfo.belongsTo(models.AllCode,{foreignKey: 'gender', targetKey:'keyMap', as: 'genderData', })
-    //   DoctorInfo.hasOne(models.Markdown,{foreignKey: 'doctorId'})
-    // }
+      DoctorInfo.belongsTo(models.User,{foreignKey: 'doctorId'});
+      DoctorInfo.belongsTo(models.AllCode, { foreignKey:'priceId' ,targetKey: 'keyMap', as: 'priceData' });
+      DoctorInfo.belongsTo(models.AllCode, { foreignKey:'provinceId' ,targetKey: 'keyMap', as: 'provinceData' });
+      DoctorInfo.belongsTo(models.AllCode, { foreignKey:'paymentId' ,targetKey: 'keyMap', as: 'paymentData' });
+    }
   }
   DoctorInfo.init({
     doctorId: DataTypes.INTEGER,
@@ -35,6 +30,7 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: 'DoctorInfo',
+    freezeTableName: true
   });
   return DoctorInfo;
 };
