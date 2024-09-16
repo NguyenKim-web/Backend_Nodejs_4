@@ -9,11 +9,23 @@ let postBookingAppointment  = async (req, res)=>{
         console.log(error);
         return res.status(200).json({
             errCode: -1,
-            message: "Error from server(patientController)..."
+            message: "Error from server( postBookingAppointment patientController)..."
         })
     }
 }
-
+let postVerifyBooking =async(req, res)=>{
+    try {
+        let info = await PATIENTservice.postVerifyBookingService(req.body);
+        return res.status(200).json(info);
+    } catch (error) {
+        console.log(error);
+        return res.status(200).json({
+            errCode: -1,
+            message: "Error from server( verify booking patientController)..."
+        })
+    }
+}
 module.exports ={
-    postBookingAppointment: postBookingAppointment
+    postBookingAppointment: postBookingAppointment,
+    postVerifyBooking: postVerifyBooking
 }
